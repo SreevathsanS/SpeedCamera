@@ -1,0 +1,52 @@
+# Core dependencies
+opencv-python
+# ===============================
+# TensorRT & CUDA Installation (Windows)
+# ===============================
+# 1. Install NVIDIA GPU Driver
+#    https://www.nvidia.com/Download/index.aspx
+# 2. Install CUDA Toolkit (e.g., CUDA 12.x)
+#    https://developer.nvidia.com/cuda-downloads
+# 3. Install cuDNN for your CUDA version
+#    https://developer.nvidia.com/cudnn
+#    Extract and copy files to your CUDA directory.
+# 4. Install TensorRT for your CUDA version
+#    https://developer.nvidia.com/tensorrt
+#    Extract and add TensorRT 'bin' directory to your system PATH.
+# 5. Install Python TensorRT bindings
+#    pip install <path_to_tensorrt_wheel_file.whl>
+# 6. Verify Installation
+#    import tensorrt
+#    print(tensorrt.__version__)
+#
+# Note: TensorRT, CUDA, and cuDNN versions must match. See NVIDIA docs for details.
+ultralytics
+supervision
+numpy
+networkx
+fastapi
+uvicorn
+python-dotenv
+
+# Database
+sqlite3
+
+# Optional (for development, testing, and compatibility)
+pillow
+pytest
+
+# If using YOLOv5/YOLOv8 models
+torch
+torchvision
+
+# If you use pandas in any scripts
+tqdm
+pandas
+
+# For authentication (if used)
+passlib
+
+# For CORS in FastAPI
+fastapi[all]
+
+# Remove any unused packages as needed.
