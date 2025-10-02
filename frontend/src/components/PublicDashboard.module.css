@@ -1,0 +1,67 @@
+/* src/components/PublicDashboard.module.css */
+.dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.dashboard h1 {
+  margin-bottom: 1.5rem;
+}
+
+.challanGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.challanCard {
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.challanCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.vehicleImage {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+
+.cardContent {
+  padding: 1rem;
+}
+
+.cardContent h3 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+
+.cardContent p {
+  margin: 0.5rem 0;
+  color: var(--text-secondary);
+}
+
+.button {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--accent-color);
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  text-align: center;
+}
+
+.button:hover {
+  background-color: var(--accent-color-hover);
+}

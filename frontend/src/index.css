@@ -1,0 +1,34 @@
+/* src/index.css */
+
+/* Define CSS variables for light mode (default) */
+:root {
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --background-color: #f1f5f9; /* slate-100 */
+  --card-background: #ffffff;
+  --text-primary: #1e293b;     /* slate-800 */
+  --text-secondary: #64748b;   /* slate-500 */
+  --border-color: #cbd5e1;      /* slate-300 */
+  --accent-color: #4f46e5;      /* indigo-600 */
+  --accent-color-hover: #4338ca;/* indigo-700 */
+}
+
+/* Define CSS variables for dark mode */
+body.dark {
+  --background-color: #0f172a; /* slate-900 */
+  --card-background: #1e293b; /* slate-800 */
+  --text-primary: #f1f5f9;     /* slate-100 */
+  --text-secondary: #94a3b8;   /* slate-400 */
+  --border-color: #475569;      /* slate-600 */
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background-color: var(--background-color);
+  color: var(--text-primary);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+* {
+  box-sizing: border-box;
+}

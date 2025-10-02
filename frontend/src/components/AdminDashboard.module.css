@@ -1,0 +1,115 @@
+/* src/components/AdminDashboard.module.css */
+.dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.dashboard h1 {
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  color: var(--text-primary);
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.statCard {
+  background-color: var(--card-background);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.statCard h2 {
+  margin: 0;
+  font-size: 2.5rem;
+  color: var(--accent-color);
+}
+
+.statCard p {
+  margin: 0.25rem 0 0;
+  color: var(--text-secondary);
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+}
+
+.column h2 {
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.tableContainer {
+  overflow-x: auto;
+}
+
+.eventsTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.eventsTable th,
+.eventsTable td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.eventsTable th {
+  background-color: var(--background-color);
+  font-weight: 600;
+}
+
+.alertsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.alertsList li {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.alertsList li:last-child {
+  border-bottom: none;
+}
+
+.error {
+  color: #ef4444;
+  font-weight: 500;
+}
+
+/* Add this to AdminDashboard.module.css */
+.videoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.videoContainer {
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.videoContainer h3 {
+  margin-top: 0;
+  text-align: center;
+}

@@ -1,0 +1,19 @@
+# Python specific
+__pycache__/
+*.pyc
+.env
+
+# Virtual environment
+venv/
+env/
+
+# VS Code specific
+.vscode/
+
+# Outputs - You probably don't want to track generated images and challans
+outputs/
+
+# Large files - Add any large data or model files if your teammates can download them separately
+# For example:
+# data/videos/
+# models/
