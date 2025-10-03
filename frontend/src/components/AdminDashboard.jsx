@@ -44,23 +44,51 @@ export default function AdminDashboard() {
       console.log('WebSocket connection established');
     };
 
-    // This function runs every time the server sends a new event
+    // =======================================================
+    // --- THIS IS THE CORRECTED SECTION ---
+    // =======================================================
     ws.onmessage = (event) => {
       const newEventData = JSON.parse(event.data);
       console.log('Real-time event received:', newEventData);
 
-      // Add the new event to the top of the events list
-      setEvents(prevEvents => [newEventData, ...prevEvents]);
+      // Check the type of the event to handle it correctly
+      if (newEventData.type === 'stolen_vehicle_alert') {
+        // --- HANDLE STOLEN VEHICLE ALERT ---
+        
+        // Format the alert object into a readable string for the UI
+        const formattedAlert = `${newEventData.timestamp}: STOLEN VEHICLE! Plate: ${newEventData.plate_number} seen on Camera: ${newEventData.camera_id}`;
+        
+        // Add the new alert to the top of the alerts list
+        setAlerts(prevAlerts => [formattedAlert, ...prevAlerts]);
 
-      // Update the statistics in real-time
-      setStats(prevStats => {
-        if (!prevStats) return null; // Don't update if initial stats haven't loaded
-        return {
-          ...prevStats,
-          total_violations: prevStats.total_violations + 1,
-        };
-      });
+        // Also, update the stolen alerts stat card
+        setStats(prevStats => {
+            if (!prevStats) return null;
+            return {
+                ...prevStats,
+                stolen_alerts: (prevStats.stolen_alerts || 0) + 1,
+            };
+        });
+
+      } else {
+        // --- HANDLE OVERSPEEDING EVENT (default) ---
+
+        // Add the new event to the top of the events list
+        setEvents(prevEvents => [newEventData, ...prevEvents]);
+
+        // Update the statistics in real-time
+        setStats(prevStats => {
+          if (!prevStats) return null;
+          return {
+            ...prevStats,
+            total_violations: prevStats.total_violations + 1,
+          };
+        });
+      }
     };
+    // =======================================================
+    // --- END OF CORRECTED SECTION ---
+    // =======================================================
 
     ws.onclose = () => {
       console.log('WebSocket connection closed');
