@@ -233,35 +233,40 @@ def video_processing_thread(cam_id: str, source: str):
                                         
                                         if len(ocr_result) > 0:
                                             plate_text = clean_plate_text(ocr_result[0][1])
+                                            # --- ADDED: USER CREATION LOGIC ---
+                                            # =======================================================
+                                            if plate_text != "UNKNOWN":
 
                                             # =======================================================
                                             # --- ADDED: STOLEN VEHICLE DETECTION LOGIC ---
                                             # =======================================================
-                                            if plate_text and plate_text in stolen_plates:
-                                                logging.critical(f"🚨 STOLEN VEHICLE DETECTED! Plate: {plate_text}, Camera: {cam_id}")
-                                                try:
-                                                    with open(stolen_log_path, 'a') as log_file:
-                                                        log_file.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}: STOLEN VEHICLE ALERT! Plate: {plate_text} seen on Camera: {cam_id}\n")
-                                                except Exception as e:
-                                                    logging.error(f"Failed to write to stolen vehicle log: {e}")
-                                            # =======================================================
-                                                                                            # 2. Send real-time notification for stolen vehicle
-                                                try:
-                                                    # We need a timestamp for the image filename
-                                                    temp_timestamp = time.strftime('%Y-%m-%d_%H-%M-%S')
-                                                    vehicle_image_filename_for_alert = f"vehicle_{cam_id}_{track_id}_{temp_timestamp}.jpg"
-                                                    alert_payload = {
-                                                        "type": "stolen_vehicle_alert",
-                                                        "timestamp": time.strftime('%Y-%m-%d %H:%M:%S'),
-                                                        "camera_id": cam_id,
-                                                        "plate_number": plate_text,
-                                                        "vehicle_image_url": f"/files/vehicles/{vehicle_image_filename_for_alert}"
-                                                    }
-                                                    requests.post("http://127.0.0.1:8000/api/notify-new-event", json=alert_payload, timeout=2)
-                                                    logging.info(f"Sent real-time notification for stolen vehicle: {plate_text}")
-                                                except requests.exceptions.RequestException as e:
-                                                    logging.error(f"Could not send real-time stolen vehicle notification: {e}")
-                                            
+                                                if plate_text and plate_text in stolen_plates:
+                                                    logging.critical(f"🚨 STOLEN VEHICLE DETECTED! Plate: {plate_text}, Camera: {cam_id}")
+                                                    try:
+                                                        with open(stolen_log_path, 'a') as log_file:
+                                                            log_file.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}: STOLEN VEHICLE ALERT! Plate: {plate_text} seen on Camera: {cam_id}\n")
+                                                    except Exception as e:
+                                                        logging.error(f"Failed to write to stolen vehicle log: {e}")
+                                                # =======================================================
+                                                    auth.add_new_user(plate_text, "public123")
+                                                # =======================================================
+                                                # 2. Send real-time notification for stolen vehicle
+                                                    try:
+                                                        # We need a timestamp for the image filename
+                                                        temp_timestamp = time.strftime('%Y-%m-%d_%H-%M-%S')
+                                                        vehicle_image_filename_for_alert = f"vehicle_{cam_id}_{track_id}_{temp_timestamp}.jpg"
+                                                        alert_payload = {
+                                                            "type": "stolen_vehicle_alert",
+                                                            "timestamp": time.strftime('%Y-%m-%d %H:%M:%S'),
+                                                            "camera_id": cam_id,
+                                                            "plate_number": plate_text,
+                                                            "vehicle_image_url": f"/files/vehicles/{vehicle_image_filename_for_alert}"
+                                                        }
+                                                        requests.post("http://127.0.0.1:8000/api/notify-new-event", json=alert_payload, timeout=2)
+                                                        logging.info(f"Sent real-time notification for stolen vehicle: {plate_text}")
+                                                    except requests.exceptions.RequestException as e:
+                                                        logging.error(f"Could not send real-time stolen vehicle notification: {e}")
+                                                
                             except Exception as e:
                                 logging.error(f"ANPR Error during capture for ID {track_id}: {e}")
 
@@ -417,7 +422,7 @@ async def get_overspeeding_events(current_user: dict = Depends(auth.get_current_
     if current_user["role"] == "admin":
         cursor.execute("SELECT * FROM overspeeding_log ORDER BY id DESC")
     else:
-        cursor.execute("SELECT * FROM overspeed_log WHERE plate_number = ? ORDER BY id DESC", (current_user["username"],))
+        cursor.execute("SELECT * FROM overspeeding_log WHERE plate_number = ? ORDER BY id DESC", (current_user["username"],))
     rows = cursor.fetchall()
     conn.close()
     

@@ -1,6 +1,17 @@
+// src/components/AdminDashboard.jsx
 import React, {useState, useEffect} from 'react';
 import apiClient from '../api/apiClient';
+import { useAuth } from '../context/AuthContext';
 import styles from './AdminDashboard.module.css';
+
+// Import the Document and Page components from react-pdf
+import { Document, Page, pdfjs } from 'react-pdf';
+// Import the styles for the viewer
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
+
+// Configure the PDF.js worker to load from the public directory
+pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.mjs`;
 
 // --- Configuration ---
 // Define your camera IDs and the base URL of your API server
@@ -13,6 +24,12 @@ export default function AdminDashboard() {
   const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  
+  // --- ADDED STATE FOR PDF VIEWER ---
+  const [activePdfUrl, setActivePdfUrl] = useState(null);
+  const [numPages, setNumPages] = useState(null);
+  const [pageNumber, setPageNumber] = useState(1);
+  const { user } = useAuth(); // You may not need this for the admin dashboard, but it's good practice to keep if you ever need user context.
 
   useEffect(() => {
     // 1. Initial data fetch to load existing data
@@ -66,6 +83,7 @@ export default function AdminDashboard() {
             if (!prevStats) return null;
             return {
                 ...prevStats,
+                // Ensure stolen_alerts exists before incrementing
                 stolen_alerts: (prevStats.stolen_alerts || 0) + 1,
             };
         });
@@ -103,6 +121,16 @@ export default function AdminDashboard() {
       ws.close();
     };
   }, []); // The empty dependency array ensures this effect runs only once
+
+  // --- ADDED HANDLERS FOR PDF VIEWER ---
+  const onDocumentLoadSuccess = ({ numPages }) => {
+    setNumPages(numPages);
+  };
+  
+  const handleViewChallan = (url) => {
+    setActivePdfUrl(url);
+    setPageNumber(1); // Reset to the first page when a new PDF is opened
+  };
 
   if (loading) {
     return <p>Loading dashboard...</p>;
@@ -160,6 +188,7 @@ export default function AdminDashboard() {
                   <th>Plate</th>
                   <th>Speed</th>
                   <th>Camera</th>
+                  <th>Challan</th>
                 </tr>
               </thead>
               <tbody>
@@ -169,6 +198,15 @@ export default function AdminDashboard() {
                     <td>{event.plate_number}</td>
                     <td>{Math.round(event.speed_kmh)} km/h</td>
                     <td>{event.camera_id}</td>
+                    <td>
+                      {/* --- ADDED CHALLAN VIEW BUTTON --- */}
+                      <button
+                        onClick={() => handleViewChallan(`${API_URL}${event.challan_pdf_url}`)}
+                        className={styles.viewChallanButton}
+                      >
+                        View
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -189,6 +227,38 @@ export default function AdminDashboard() {
           </ul>
         </div>
       </div>
+      
+      {/* --- ADDED PDF VIEWER SECTION --- */}
+      {activePdfUrl && (
+        <div className={styles.pdfViewerContainer}>
+          <div className={styles.pdfControls}>
+            <button
+              onClick={() => setActivePdfUrl(null)}
+              className={styles.closeButton}
+            >
+              Close Viewer
+            </button>
+            <button
+              onClick={() => setPageNumber(prev => Math.max(prev - 1, 1))}
+              disabled={pageNumber <= 1}
+            >
+              Previous Page
+            </button>
+            <span>
+              Page {pageNumber} of {numPages}
+            </span>
+            <button
+              onClick={() => setPageNumber(prev => Math.min(prev + 1, numPages))}
+              disabled={pageNumber >= numPages}
+            >
+              Next Page
+            </button>
+          </div>
+          <Document file={activePdfUrl} onLoadSuccess={onDocumentLoadSuccess}>
+            <Page pageNumber={pageNumber} />
+          </Document>
+        </div>
+      )}
     </div>
   );
 }

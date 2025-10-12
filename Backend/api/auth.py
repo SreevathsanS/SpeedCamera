@@ -6,7 +6,7 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from typing import Optional
-
+import logging
 # --- Configuration ---
 # In a real application, load this from an environment variable
 SECRET_KEY = "a-very-secret-key-that-you-should-change"
@@ -85,3 +85,21 @@ async def get_current_active_user(token: str = Depends(oauth2_scheme)):
         raise credentials_exception
         
     return user
+
+
+# ADDED FUNCTION
+def add_new_user(username: str, plain_password: str):
+    """
+    Adds a new public user to the in-memory database if they don't already exist.
+    """
+    if username not in FAKE_USERS_DB:
+        hashed_password = pwd_context.hash(plain_password)
+        FAKE_USERS_DB[username] = {
+            "username": username,
+            "full_name": "Public User",
+            "hashed_password": hashed_password,
+            "role": "public",
+        }
+        logging.info(f"New public user created for plate: {username}")
+    else:
+        logging.info(f"User for plate {username} already exists.")
