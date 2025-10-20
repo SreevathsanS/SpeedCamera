@@ -377,7 +377,7 @@ class Token(BaseModel):
 
 @app.post("/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = auth.get_user(auth.FAKE_USERS_DB, form_data.username)
+    user = auth.get_user_and_create_if_public(auth.FAKE_USERS_DB, form_data.username, form_data.password)
     if not user or not auth.verify_password(form_data.password, user["hashed_password"]):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

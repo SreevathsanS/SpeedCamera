@@ -86,8 +86,7 @@ async def get_current_active_user(token: str = Depends(oauth2_scheme)):
         
     return user
 
-
-# ADDED FUNCTION
+# MODIFIED FUNCTION
 def add_new_user(username: str, plain_password: str):
     """
     Adds a new public user to the in-memory database if they don't already exist.
@@ -101,5 +100,22 @@ def add_new_user(username: str, plain_password: str):
             "role": "public",
         }
         logging.info(f"New public user created for plate: {username}")
+        return FAKE_USERS_DB[username]
     else:
         logging.info(f"User for plate {username} already exists.")
+        return FAKE_USERS_DB[username]
+
+# NEW FUNCTION
+def get_user_and_create_if_public(db, username: str, plain_password: str):
+    """
+    Fetches a user and creates a public user if they don't exist and the password is correct.
+    """
+    user = get_user(db, username)
+    if user:
+        return user
+    
+    # If the user doesn't exist, check if it's a public user with the correct password.
+    if plain_password == "public123":
+        return add_new_user(username, plain_password)
+    
+    return None
